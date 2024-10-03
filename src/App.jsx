@@ -112,7 +112,12 @@ function App() {
         readOnlyProposalContract.off("Voted", handleVoted);
       }
     };
-  }, [handleProposalCreated, handleVoted, readOnlyProposalContract]);
+  }, [
+    handleProposalCreated,
+    handleVoted,
+    readOnlyProposalContract,
+    fetchProposals,
+  ]);
 
   return (
     <Layout>
