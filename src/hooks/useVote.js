@@ -11,8 +11,6 @@ const useVote = () => {
   const { chainId } = useAppKitNetwork();
   return useCallback(
     async (proposalId) => {
-      console.log(proposalId);
-
       if (!address) {
         toast.error("Connect your wallet!");
         return;

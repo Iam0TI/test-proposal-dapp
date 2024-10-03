@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Box } from "@radix-ui/themes";
 import Layout from "./components/Layout";
 import CreateProposalModal from "./components/CreateProposalModal";
@@ -26,21 +27,16 @@ function App() {
     );
 
     const itf = await new Interface(ABI);
-    console.log(itf);
 
     try {
-      console.log("herreee");
       const proposalCount = Number(
         await readOnlyProposalContract.proposalCount()
       );
-
-      console.log(proposalCount);
 
       const proposalsIds = Array.from(
         { length: proposalCount - 1 },
         (_, i) => i + 1
       );
-      console.log(proposalsIds);
 
       const calls = proposalsIds.map((id) => ({
         target: import.meta.env.VITE_CONTRACT_ADDRESS,
@@ -116,12 +112,7 @@ function App() {
         readOnlyProposalContract.off("Voted", handleVoted);
       }
     };
-  }, [
-    fetchProposals,
-    handleProposalCreated,
-    handleVoted,
-    readOnlyProposalContract,
-  ]);
+  }, [handleProposalCreated, handleVoted, readOnlyProposalContract]);
 
   return (
     <Layout>
@@ -157,7 +148,7 @@ export default App;
 //     console.log(itf);
 
 //     try {
-//       console.log("herreee");
+//       console.log("here");
 //       const proposalCount = Number(
 //         await readOnlyProposalContract.proposalCount()
 //       );
