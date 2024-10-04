@@ -1,11 +1,10 @@
-import { XCircleIcon } from "@heroicons/react/16/solid";
-import * as Dialog from "@radix-ui/react-dialog";
 import { useState } from "react";
+import * as Dialog from "@radix-ui/react-dialog";
+import { XCircleIcon } from "@heroicons/react/16/solid";
 import useCreateProposal from "../hooks/useCreateProposal";
 
 const CreateProposalModal = () => {
   const handleCreateProposal = useCreateProposal();
-
   const [state, setState] = useState({
     description: "",
     recipient: "",
@@ -14,121 +13,77 @@ const CreateProposalModal = () => {
     minVote: 2,
   });
 
-  const handleInputChange = (name, e) => {
-    setState((preState) => ({ ...preState, [name]: e.target.value }));
+  const handleInputChange = (name, value) => {
+    setState((prevState) => ({ ...prevState, [name]: value }));
   };
 
-  const { amount, duration, description, minVote, recipient } = state;
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    handleCreateProposal(
+      state.description,
+      state.recipient,
+      state.amount,
+      state.duration,
+      state.minVote
+    );
+  };
+
+  const inputFields = [
+    { name: "description", label: "Description", type: "text" },
+    { name: "recipient", label: "Recipient", type: "text" },
+    { name: "amount", label: "Amount", type: "number", step: "0.01" },
+    { name: "duration", label: "Duration (in seconds)", type: "number" },
+    { name: "minVote", label: "Min Required Votes", type: "number" },
+  ];
+
   return (
     <Dialog.Root>
       <Dialog.Trigger asChild>
-        <button className="bg-blue-500 p-4 text-white shadow-md rounded-md">
+        <button className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded shadow transition duration-300">
           Create Proposal
         </button>
       </Dialog.Trigger>
       <Dialog.Portal>
-        <Dialog.Overlay className="bg-blackA6 data-[state=open]:animate-overlayShow fixed inset-0" />
-        <Dialog.Content className="data-[state=open]:animate-contentShow fixed top-[50%] left-[50%] max-h-[85vh] w-[90vw] max-w-[450px] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-white p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none">
-          <Dialog.Title className="text-mauve12 m-0 text-[17px] font-medium mb-6">
+        <Dialog.Overlay className="fixed inset-0 bg-black bg-opacity-50 transition-opacity" />
+        <Dialog.Content className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg shadow-xl p-6 w-full max-w-md">
+          <Dialog.Title className="text-2xl font-bold mb-4">
             Create Proposal
           </Dialog.Title>
-          <fieldset className="mb-[15px] flex items-center gap-5">
-            <label
-              className="text-violet11 w-[90px] text-right text-[15px]"
-              htmlFor="name"
-            >
-              Description
-            </label>
-            <input
-              className="text-violet11 shadow-violet7 focus:shadow-violet8 inline-flex h-[35px] w-full flex-1 items-center justify-center rounded-[4px] px-[10px] text-[15px] leading-none shadow-[0_0_0_1px] outline-none focus:shadow-[0_0_0_2px]"
-              id="name"
-              type="text"
-              value={description}
-              onChange={(e) => handleInputChange("description", e)}
-            />
-          </fieldset>
-          <fieldset className="mb-[15px] flex items-center gap-5">
-            <label
-              className="text-violet11 w-[90px] text-right text-[15px]"
-              htmlFor="username"
-            >
-              Recipient
-            </label>
-            <input
-              className="text-violet11 shadow-violet7 focus:shadow-violet8 inline-flex h-[35px] w-full flex-1 items-center justify-center rounded-[4px] px-[10px] text-[15px] leading-none shadow-[0_0_0_1px] outline-none focus:shadow-[0_0_0_2px]"
-              id="username"
-              type="text"
-              value={recipient}
-              onChange={(e) => handleInputChange("recipient", e)}
-            />
-          </fieldset>
-          <fieldset className="mb-[15px] flex items-center gap-5">
-            <label
-              className="text-violet11 w-[90px] text-right text-[15px]"
-              htmlFor="username"
-            >
-              Amount
-            </label>
-            <input
-              className="text-violet11 shadow-violet7 focus:shadow-violet8 inline-flex h-[35px] w-full flex-1 items-center justify-center rounded-[4px] px-[10px] text-[15px] leading-none shadow-[0_0_0_1px] outline-none focus:shadow-[0_0_0_2px]"
-              id="username"
-              type="text"
-              value={amount}
-              onChange={(e) => handleInputChange("amount", e)}
-            />
-          </fieldset>
-          <fieldset className="mb-[15px] flex items-center gap-5">
-            <label
-              className="text-violet11 w-[90px] text-right text-[15px]"
-              htmlFor="username"
-            >
-              Duration
-            </label>
-            <input
-              className="text-violet11 shadow-violet7 focus:shadow-violet8 inline-flex h-[35px] w-full flex-1 items-center justify-center rounded-[4px] px-[10px] text-[15px] leading-none shadow-[0_0_0_1px] outline-none focus:shadow-[0_0_0_2px]"
-              id="username"
-              type="text"
-              value={duration}
-              onChange={(e) => handleInputChange("duration", e)}
-            />
-          </fieldset>
-          <fieldset className="mb-[15px] flex items-center gap-5">
-            <label
-              className="text-violet11 w-[90px] text-right text-[15px]"
-              htmlFor="username"
-            >
-              Min Required Votes
-            </label>
-            <input
-              className="text-violet11 shadow-violet7 focus:shadow-violet8 inline-flex h-[35px] w-full flex-1 items-center justify-center rounded-[4px] px-[10px] text-[15px] leading-none shadow-[0_0_0_1px] outline-none focus:shadow-[0_0_0_2px]"
-              id="username"
-              type="text"
-              value={minVote}
-              onChange={(e) => handleInputChange("minVote", e)}
-            />
-          </fieldset>
-          <div className="mt-[25px] flex w-full">
+          <form onSubmit={handleSubmit}>
+            {inputFields.map((field) => (
+              <div key={field.name} className="mb-4">
+                <label
+                  htmlFor={field.name}
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
+                  {field.label}
+                </label>
+                <input
+                  id={field.name}
+                  type={field.type}
+                  value={state[field.name]}
+                  onChange={(e) =>
+                    handleInputChange(field.name, e.target.value)
+                  }
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  required
+                  step={field.step}
+                />
+              </div>
+            ))}
             <button
-              className="block w-full bg-blue-500 p-4 text-white items-center justify-center rounded-[4px] px-[15px] font-medium leading-none focus:shadow-[0_0_0_2px] focus:outline-none"
-              onClick={() =>
-                handleCreateProposal(
-                  description,
-                  recipient,
-                  amount,
-                  duration,
-                  minVote
-                )
-              }
+              type="submit"
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded shadow transition duration-300 mt-4"
             >
-              Create
+              Create Proposal
             </button>
-          </div>
+          </form>
           <Dialog.Close asChild>
             <button
-              className="text-violet11 hover:bg-violet4 focus:shadow-violet7 absolute top-[10px] right-[10px] inline-flex h-[25px] w-[25px] appearance-none items-center justify-center rounded-full focus:shadow-[0_0_0_2px] focus:outline-none"
+              className="absolute top-2 right-2 text-gray-400 hover:text-gray-600"
               aria-label="Close"
             >
-              <XCircleIcon />
+              <XCircleIcon className="h-6 w-6" />
             </button>
           </Dialog.Close>
         </Dialog.Content>

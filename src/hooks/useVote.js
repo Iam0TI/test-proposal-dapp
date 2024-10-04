@@ -4,11 +4,14 @@ import useContract from "./useContract";
 import { useAppKitAccount } from "@reown/appkit/react";
 import { useAppKitNetwork } from "@reown/appkit/react";
 import { liskSepoliaNetwork } from "../connection";
+import { ErrorDecoder } from "ethers-decode-error";
 
 const useVote = () => {
   const contract = useContract(true);
   const { address } = useAppKitAccount();
   const { chainId } = useAppKitNetwork();
+
+  const errorDecoder = ErrorDecoder.create();
   return useCallback(
     async (proposalId) => {
       if (!address) {
@@ -38,11 +41,12 @@ const useVote = () => {
         toast.error("Proposal VOte failed");
         return;
       } catch (error) {
-        console.error("error while voting for  proposal: ", error);
-        toast.error("Proposal vote errored");
+        const { reason } = await errorDecoder.decode(error);
+
+        toast.error(reason);
       }
     },
-    [address, chainId, contract]
+    [address, chainId, contract, errorDecoder]
   );
 };
 
