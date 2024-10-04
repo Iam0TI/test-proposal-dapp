@@ -5,19 +5,29 @@ import CreateProposalModal from "./components/CreateProposalModal";
 import Proposals from "./components/Proposals";
 import useContract from "./hooks/useContract";
 import { useCallback, useEffect, useState } from "react";
-import { Contract } from "ethers";
+import { Contract, ethers } from "ethers";
 import useRunners from "./hooks/useRunners";
 import { Interface } from "ethers";
 import ABI from "./ABI/proposal.json";
 
 function App() {
   const readOnlyProposalContract = useContract();
+  const [contractBalance, setContractBalance] = useState("0");
+  const contractAddress = import.meta.env.VITE_CONTRACT_ADDRESS;
   const { readOnlyProvider } = useRunners();
   const [proposals, setProposals] = useState([]);
+
   const multicallAbi = [
     "function tryAggregate(bool requireSuccess, (address target, bytes callData)[] calls) returns ((bool success, bytes returnData)[] returnData)",
   ];
-
+  const fetchBalance = async () => {
+    try {
+      const balance = await readOnlyProvider.getBalance(contractAddress);
+      setContractBalance(ethers.formatEther(balance));
+    } catch (error) {
+      console.error("Error fetching contract balance:", error);
+    }
+  };
   const fetchProposals = useCallback(async () => {
     if (!readOnlyProposalContract) return;
 
@@ -101,6 +111,7 @@ function App() {
 
   useEffect(() => {
     fetchProposals();
+    fetchBalance();
 
     if (readOnlyProposalContract) {
       readOnlyProposalContract.on("ProposalCreated", handleProposalCreated);
@@ -122,8 +133,10 @@ function App() {
 
   return (
     <Layout>
-      <Box className="flex justify-end p-4">
+      <Box className="flex justify-between p-4">
         <CreateProposalModal />
+        <h2> Help Fund Contract at : {contractAddress} </h2>
+        <h2>Contract Balance: {contractBalance} ETH</h2>
       </Box>
       <Proposals proposals={proposals} />
     </Layout>
